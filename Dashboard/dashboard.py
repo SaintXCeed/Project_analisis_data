@@ -5,12 +5,10 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
-
 sns.set(style='dark')
 
 st.title('Bike Sharing Analytics Dashboard :sparkles:')
 
-# Create helper functions for dataframe
 def create_rentals_per_year_df(df):
     rentals_per_year = df.groupby('yr')['cnt'].sum().reset_index()
     return rentals_per_year
@@ -39,12 +37,9 @@ all_df["dteday"] = pd.to_datetime(all_df["dteday"])
 min_date = all_df["dteday"].min()
 max_date = all_df["dteday"].max()
 
-# Sidebar for date filtering
+# Sidebar
 with st.sidebar:
-
     st.header("Filter by Date Range")
-    
-    # Mengambil start_date & end_date dari date_input
     start_date, end_date = st.date_input(
         label='Rentang Waktu', 
         min_value=min_date,
@@ -52,17 +47,15 @@ with st.sidebar:
         value=[min_date, max_date]
     )
     
-    # Filter data based on selected date range
     mask = (all_df['dteday'] >= pd.to_datetime(start_date)) & (all_df['dteday'] <= pd.to_datetime(end_date))
     filtered_df = all_df[mask]
 
-# Create dataframes
 rentals_per_year = create_rentals_per_year_df(filtered_df)
 users_notholiday_and_holiday = create_users_notholiday_and_holiday_df(filtered_df)
 rentals_per_season = create_rentals_per_season_df(filtered_df)
 user_type = create_users_type_df(filtered_df)
 
-# Tab structure
+# Tab 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Rentals per Year", 
                                         "Users on Holiday and Not Holiday", 
                                         "Rentals per Season", 
@@ -125,19 +118,13 @@ with tab5:
     features = ['temp', 'hum', 'windspeed'] + [col for col in all_df_encoded.columns if 'season_' in col or 'holiday_' in col or 'weathersit_' in col]
     X = all_df_encoded[features]
     y = all_df_encoded['cnt']
-
-    # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Train the regression model
     reg_model = LinearRegression()
     reg_model.fit(X_train, y_train)
 
-    # Make predictions and calculate error metrics
+
     y_pred = reg_model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
-
-    # Plot actual vs predicted values
     fig, ax = plt.subplots(figsize=(10, 5))
     sns.scatterplot(x=y_test, y=y_pred, ax=ax)
     plt.title('Actual vs Predicted Rentals')
