@@ -32,7 +32,7 @@ def create_users_type_df(df):
     return user_type
 
 # Load data
-all_df = pd.read_csv("Dashboard/all_data.csv")
+all_df = pd.read_csv("MyDashboard/all_data.csv")
 all_df["dteday"] = pd.to_datetime(all_df["dteday"])
 min_date = all_df["dteday"].min()
 max_date = all_df["dteday"].max()
