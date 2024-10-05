@@ -1,1 +1,1 @@
-https://bike-sharing-saintxceed.streamlit.app/
+https://bike-sharing-analytic.streamlit.app/
